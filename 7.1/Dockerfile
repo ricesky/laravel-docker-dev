@@ -1,11 +1,11 @@
-FROM php:8.0.5-fpm-alpine3.13
+FROM php:7.1-fpm-alpine3.10
 
 # Install packages and remove default server definition
-RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs && \
+RUN apk --no-cache add gnupg autoconf make g++ nginx supervisor zlib-dev libpng-dev icu-dev icu-libs librdkafka-dev git libzip-dev shadow nodejs nodejs-npm && \
     rm /etc/nginx/conf.d/default.conf
 
 # Install PHP extensions
-RUN docker-php-ext-install bcmath gd exif pcntl intl
+RUN docker-php-ext-install bcmath gd exif pcntl intl zip
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -25,6 +25,10 @@ RUN gpg --verify mssql-tools_17.7.1.1-1_amd64.sig mssql-tools_17.7.1.1-1_amd64.a
 RUN apk add --allow-untrusted msodbcsql17_17.7.2.1-1_amd64.apk
 RUN apk add --allow-untrusted mssql-tools_17.7.1.1-1_amd64.apk
 
+# Set mssql-tools ENV variable to the PATH
+ENV PATH "$PATH:/opt/mssql-tools/bin"
+RUN echo $PATH
+
 # Remove the ODBC packages
 RUN rm msodbcsql17_17.7.2.1-1_amd64.apk \
     mssql-tools_17.7.1.1-1_amd64.apk \
@@ -36,14 +40,19 @@ RUN apk add --allow-untrusted unixodbc-dev
 
 # Install SQL Server Drivers
 RUN pecl channel-update pecl.php.net
-RUN pecl install sqlsrv 5.9.0
-RUN pecl install pdo_sqlsrv 5.9.0
+RUN pecl install sqlsrv-5.6.0
+RUN pecl install pdo_sqlsrv-5.6.0
+RUN pecl install rdkafka    
 RUN docker-php-ext-enable --ini-name 30-sqlsrv.ini sqlsrv
 RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
+RUN docker-php-ext-enable rdkafka
 
 # Install Xdebug
-RUN pecl install xdebug 3.0.4
+RUN pecl install xdebug-2.9.0
 RUN docker-php-ext-enable --ini-name 30-xdebug.ini xdebug
+
+# Install redis
+RUN echo '' | pecl install -o -f redis &&  rm -rf /tmp/pear &&  docker-php-ext-enable redis
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
@@ -57,15 +66,6 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Setup document root
 RUN mkdir -p /var/www/html
-
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /var/www/html && \
-  chown -R nobody.nobody /run && \
-  chown -R nobody.nobody /var/lib/nginx && \
-  chown -R nobody.nobody /var/log/nginx
-
-# Switch to use a non-root user from here on
-USER nobody
 
 # Add application
 WORKDIR /var/www/html
