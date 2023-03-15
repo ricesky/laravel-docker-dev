@@ -70,6 +70,9 @@ COPY config/php.ini /usr/local/etc/php/conf.d/custom.ini
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Configure PHP-FPM
+COPY config/www.conf /usr/local/etc/php-fpm.d/www.conf
+
 # Setup document root
 RUN mkdir -p /var/www/html
 
