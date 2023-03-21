@@ -12,8 +12,7 @@ RUN apt-get update && \
     CHROMEVER=$(google-chrome --product-version | grep -o "[^\.]*\.[^\.]*\.[^\.]*") && \
     DRIVERVER=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMEVER") && \
     wget -q --continue -P /chromedriver "http://chromedriver.storage.googleapis.com/$DRIVERVER/chromedriver_linux64.zip" && \
-    unzip /chromedriver/chromedriver* -d /chromedriver && \
-    rm /etc/nginx/conf.d/default.conf
+    unzip /chromedriver/chromedriver* -d /chromedriver
 
 # Install prerequisites for the sqlsrv and pdo_sqlsrv PHP extensions.
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
