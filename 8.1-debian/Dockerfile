@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-enable --ini-name 30-xdebug.ini xdebug \
 	&& docker-php-ext-install bcmath gd exif pcntl intl zip
 
+RUN pecl install redis \
+    && docker-php-ext-enable redis 
 RUN pecl install imagick \
     && docker-php-ext-enable imagick 
 RUN pecl install rdkafka \
