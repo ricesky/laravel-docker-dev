@@ -5,6 +5,7 @@ ADD config/lib/libltdl.la /usr/lib/x86_64-linux-gnu/libltdl.la
 # Install required packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev libpng-dev \
+    libzip-dev \
     gnupg2 \
     curl \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
@@ -15,21 +16,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unixodbc-dev \
     supervisor \
     locales \
+    libmagickwand-dev \ 
+    librdkafka-dev \
     && pecl install sqlsrv pdo_sqlsrv \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv \
     && pecl install xdebug-3.2.0 \
     && docker-php-ext-enable --ini-name 30-xdebug.ini xdebug \
-	&& docker-php-ext-install gd \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+	&& docker-php-ext-install bcmath gd exif pcntl intl zip
+
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick 
+RUN pecl install rdkafka \
+    && docker-php-ext-enable rdkafka 
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen
 RUN chmod +x /etc/init.d/supervisor
 RUN update-rc.d supervisor defaults
 
-    # Composer install
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Enable Apache modules
 RUN a2enmod rewrite
