@@ -43,6 +43,11 @@ RUN a2enmod rewrite
 
 # Copy Apache virtual host configuration file
 ADD config/apache/apache-virtual-hosts.conf /etc/apache2/sites-available/000-default.conf
+ADD config/apache/apache2.conf /etc/apache2/apache2.conf
+ADD config/apache/ports.conf /etc/apache2/ports.conf
+ADD config/apache/envvars /etc/apache2/envvars
+
+# Update php.ini
 ADD config/php/php.conf /usr/local/etc/php/php.ini
 
 # Init
@@ -51,5 +56,7 @@ RUN chmod 755 /*.sh
 
 # Expose port 80
 EXPOSE 80
+
+CMD ["supervisord", "-n"]
 
 CMD ["/init.sh"]
