@@ -27,6 +27,7 @@ RUN apt-get update && \
       php7.0-mcrypt \
       libapache2-mod-php7.0 \
       curl \
+      git \
       php7.0-curl \
       php7.0-redis \
       librdkafka-dev 
@@ -37,7 +38,7 @@ RUN a2enmod rewrite
 RUN phpenmod mcrypt
 
 # Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.2.0 /usr/bin/composer /usr/bin/composer
 
 # Update the default apache site
 ADD config/apache/apache-virtual-hosts.conf /etc/apache2/sites-enabled/000-default.conf
