@@ -53,7 +53,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-RUN ACCEPT_EULA=Y DEBIAN_FRONTEND=noninteractive apt-get -y install unixodbc-dev php-xml php-pear 
+RUN ACCEPT_EULA=Y DEBIAN_FRONTEND=noninteractive apt-get -y install msodbcsql17 unixodbc-dev php-xml php-pear 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN pecl install sqlsrv-5.3.0
