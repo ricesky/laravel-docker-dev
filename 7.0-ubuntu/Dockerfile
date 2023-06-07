@@ -63,8 +63,8 @@ RUN pecl install redis rdkafka
 
 RUN printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/7.0/mods-available/sqlsrv.ini
 RUN printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/7.0/mods-available/pdo_sqlsrv.ini
-RUN printf "; priority=10\nextension=rdkafka.so\n" > /etc/php/7.0/mods-available/rdkafka.ini
-RUN printf "; priority=10\nextension=redis.so\n" > /etc/php/7.0/mods-available/redis.ini
+RUN printf "; priority=20\nextension=rdkafka.so\n" > /etc/php/7.0/mods-available/rdkafka.ini
+RUN printf "; priority=20\nextension=redis.so\n" > /etc/php/7.0/mods-available/redis.ini
 RUN phpenmod -v 7.0 sqlsrv pdo_sqlsrv rdkafka redis
 
 # Install locales
