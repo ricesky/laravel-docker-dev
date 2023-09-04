@@ -1,5 +1,5 @@
 # Base image
-FROM php:8.1-apache-bullseye
+FROM php:8.1.19-apache-bullseye
 
 ADD config/lib/libltdl.la /usr/lib/x86_64-linux-gnu/libltdl.la
 # Install required packages
