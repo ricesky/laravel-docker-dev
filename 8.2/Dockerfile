@@ -43,8 +43,8 @@ RUN apk add --allow-untrusted unixodbc-dev
 
 # Install SQL Server Drivers
 RUN pecl channel-update pecl.php.net
-RUN pecl install sqlsrv
-RUN pecl install pdo_sqlsrv
+RUN pecl install sqlsrv-5.12.0
+RUN pecl install pdo_sqlsrv-5.12.0
 RUN pecl install rdkafka    
 RUN pecl install imagick
 

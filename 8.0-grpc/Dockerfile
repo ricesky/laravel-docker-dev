@@ -42,7 +42,7 @@ RUN rm msodbcsql17_17.7.2.1-1_amd64.apk \
 RUN apk add --allow-untrusted unixodbc-dev
 
 # Install SQL Server Drivers
-RUN pecl channel-update pecl.php.net && pecl install sqlsrv && pecl install pdo_sqlsrv && pecl install rdkafka && pecl install imagick && pecl install grpc && docker-php-ext-enable grpc
+RUN pecl channel-update pecl.php.net && pecl install sqlsrv-5.11.1 && pecl install pdo_sqlsrv-5.11.1 && pecl install rdkafka && pecl install imagick && pecl install grpc && docker-php-ext-enable grpc
 
 RUN docker-php-ext-enable --ini-name 30-sqlsrv.ini sqlsrv
 RUN docker-php-ext-enable --ini-name 35-pdo_sqlsrv.ini pdo_sqlsrv
